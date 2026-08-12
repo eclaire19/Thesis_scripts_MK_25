@@ -2,10 +2,9 @@
 import os
 import pandas as pd
 
-# ------------------ CONFIG ------------------
 samples_dir = "."  # Folder containing sample subfolders
 alphabet = "ACGT"  # DNA alphabet for MEME
-# --------------------------------------------
+
 
 def write_meme_file(motif, output_path, width=4):
     """Write a minimal MEME file for a motif"""
@@ -33,7 +32,7 @@ for sample_folder in os.listdir(samples_dir):
     # Find motifs.csv
     csv_files = [f for f in os.listdir(sample_path) if f.endswith("motifs.csv")]
     if not csv_files:
-        print(f"⚠️ No motifs.csv in {sample_folder}, skipping.")
+        print(f"No motifs.csv in {sample_folder}, skipping.")
         continue
 
     csv_path = os.path.join(sample_path, csv_files[0])
@@ -41,13 +40,13 @@ for sample_folder in os.listdir(samples_dir):
         df = pd.read_csv(csv_path)
         motif_names = df['motifString'].dropna().unique()
     except Exception as e:
-        print(f"❌ Error reading {csv_path}: {e}")
+        print(f" Error reading {csv_path}: {e}")
         continue
 
     for motif in motif_names:
         meme_file = os.path.join(sample_path, f"{motif}.meme")
         write_meme_file(motif, meme_file)
-        print(f"✅ Created MEME file: {meme_file}")
+        print(f"Created MEME file: {meme_file}")
 
 print("🎉 All MEME files created successfully.")
 
