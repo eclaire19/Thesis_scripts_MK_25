@@ -15,13 +15,13 @@ mkdir -p "$TAG_DIR_BASE"
 
 # Combine motif files
 if [[ ! -f "$MOTIFS_LIST" ]]; then
-  echo "❌ ERROR: motifs_list.txt not found at $MOTIFS_LIST"
+  echo "ERROR: motifs_list.txt not found at $MOTIFS_LIST"
   exit 1
 fi
 
-echo "🔄 Combining motif files listed in $MOTIFS_LIST"
+echo "Combining motif files listed in $MOTIFS_LIST"
 cat $(cat "$MOTIFS_LIST") > "$COMBINED_MOTIF"
-echo "✅ Combined motif file created: $COMBINED_MOTIF"
+echo "Combined motif file created: $COMBINED_MOTIF"
 
 # Process each BED/FASTA pair
 for bed_file in "$BED_DIR"/*.bed; do
@@ -30,26 +30,26 @@ for bed_file in "$BED_DIR"/*.bed; do
   fasta_file="$FASTA_DIR/${sample_prefix}.fasta"
 
   if [[ ! -f "$fasta_file" ]]; then
-    echo "⚠️ Skipping $sample_name: FASTA not found at $fasta_file"
+    echo "Skipping $sample_name: FASTA not found at $fasta_file"
     continue
   fi
 
-  echo "▶️ Processing $sample_name"
+  echo "Processing $sample_name"
   output_dir="$OUTPUT_BASE/$sample_prefix"
   mkdir -p "$output_dir"
 
   # Create tag directory if it doesn't already exist
   tag_dir="$TAG_DIR_BASE/$sample_prefix"
   if [[ ! -d "$tag_dir" ]]; then
-    echo "🔧 Indexing genome FASTA with makeTagDirectory for $sample_prefix"
+    echo "Indexing genome FASTA with makeTagDirectory for $sample_prefix"
     makeTagDirectory "$tag_dir" -fasta "$fasta_file"
   fi
 
   # Run HOMER with -find
-  echo "🔍 Running HOMER motif scan..."
+  echo "Running HOMER motif scan..."
   findMotifsGenome.pl "$bed_file" "$tag_dir" "$output_dir" -find "$COMBINED_MOTIF" > "$output_dir/homer.log" 2>&1
 
-  echo "✅ Done with $sample_name"
+  echo " Done with $sample_name"
 done
 
 echo "🎉 All motif searches completed!"
