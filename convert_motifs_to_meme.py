@@ -48,5 +48,5 @@ for sample_folder in os.listdir(samples_dir):
         write_meme_file(motif, meme_file)
         print(f"Created MEME file: {meme_file}")
 
-print("🎉 All MEME files created successfully.")
+print(" All MEME files created successfully.")
 
