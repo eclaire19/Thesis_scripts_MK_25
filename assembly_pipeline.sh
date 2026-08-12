@@ -22,11 +22,11 @@ for ASSEMBLY_FILE in "$READS_BASE_DIR"/*.fasta; do
 
     # Skip if .fai exists
     if [[ -f "$FAI_FILE" ]]; then
-        echo "✅ Skipping $SAMPLE_NAME — .fai file exists."
+        echo "Skipping $SAMPLE_NAME — .fai file exists."
         continue
     fi
 
-    echo "🔍 Processing sample: $SAMPLE_NAME"
+    echo "Processing sample: $SAMPLE_NAME"
 
     # Find the matching FASTQ in the FASTQ directory
     READ_FILE=$(find "$FASTQ_BASE_DIR" -maxdepth 1 -type f \
@@ -35,12 +35,12 @@ for ASSEMBLY_FILE in "$READS_BASE_DIR"/*.fasta; do
         | head -n 1)
 
     if [[ ! -f "$READ_FILE" ]]; then
-        echo "⚠️ No FASTQ file found for sample $SAMPLE_NAME — skipping"
+        echo " No FASTQ file found for sample $SAMPLE_NAME — skipping"
         continue
     fi
 
-    echo "📂 Reads:    $READ_FILE"
-    echo "📂 Assembly: $ASSEMBLY_FILE"
+    echo " Reads:    $READ_FILE"
+    echo "Assembly: $ASSEMBLY_FILE"
 
     SAMPLE_OUTDIR="$OUTPUT_DIR/$SAMPLE_NAME"
     mkdir -p "$SAMPLE_OUTDIR"
@@ -49,23 +49,23 @@ for ASSEMBLY_FILE in "$READS_BASE_DIR"/*.fasta; do
     VCF="$SAMPLE_OUTDIR/calls.vcf.gz"
     CONSENSUS_FASTA="$SAMPLE_OUTDIR/consensus.fasta"
 
-    echo "🧬 Aligning reads to assembly..."
+    echo "Aligning reads to assembly..."
     pbmm2 align "$ASSEMBLY_FILE" "$READ_FILE" "$BAM" --preset CCS --sort --num-threads "$THREADS"
     samtools index "$BAM"
 
-    echo "🔧 Indexing assembly..."
+    echo "Indexing assembly..."
     samtools faidx "$ASSEMBLY_FILE"
 
-    echo "📊 Calling variants..."
+    echo "Calling variants..."
     bcftools mpileup -Ou -f "$ASSEMBLY_FILE" "$BAM" | \
       bcftools call -mv -Oz -o "$VCF"
     bcftools index "$VCF"
 
-    echo "🧬 Creating consensus FASTA..."
+    echo "Creating consensus FASTA..."
     bcftools consensus "$VCF" -f "$ASSEMBLY_FILE" > "$CONSENSUS_FASTA"
     samtools faidx "$CONSENSUS_FASTA"
 
-    echo "✅ Done: $SAMPLE_NAME → $CONSENSUS_FASTA"
+    echo "Done: $SAMPLE_NAME → $CONSENSUS_FASTA"
     echo "-----------------------------------------"
 
 done
