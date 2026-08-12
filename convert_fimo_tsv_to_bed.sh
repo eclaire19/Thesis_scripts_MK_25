@@ -1,17 +1,12 @@
 #!/bin/bash
 # ==========================================================
-# Script: convert_all_fimo_to_bed.sh
-# Purpose: Recursively find FIMO TSV files in subdirectories
-#          and convert each to a properly formatted BED
-# Output: fimo.sorted.bed in the same directory as the TSV
-# ==========================================================
 
 set -euo pipefail
 
 # Base directory (default is current directory)
 BASEDIR="${1:-.}"
 
-echo "🔍 Searching for fimo.tsv files under: $BASEDIR"
+echo "Searching for fimo.tsv files under: $BASEDIR"
 
 # Find all fimo.tsv files recursively
 find "$BASEDIR" -type f -name "fimo.tsv" | while read -r FIMO_TSV; do
@@ -34,8 +29,8 @@ find "$BASEDIR" -type f -name "fimo.tsv" | while read -r FIMO_TSV; do
         print chrom, start, end, name, score, strand
     }' "$FIMO_TSV" | sort -k1,1 -k2,2n > "$OUTPUT_BED"
 
-    echo "✅ Created BED: $OUTPUT_BED"
+    echo "Created BED: $OUTPUT_BED"
 done
 
-echo "🎉 All FIMO TSV files processed!"
+echo "All FIMO TSV files processed!"
 
