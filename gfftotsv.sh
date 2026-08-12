@@ -27,7 +27,7 @@ for dir in analysis-*; do
     }' "$gff" > "results/${sample}.tsv"
 
   else
-    echo "⚠️ No basemods.gff found in $dir, skipping..."
+    echo " No basemods.gff found in $dir, skipping..."
   fi
 done
 
