@@ -4,11 +4,6 @@
 #SBATCH --exclusive
 #SBATCH --job-name=plassembler_flye
 
-
-# ==========================================================
-# USER CONFIGURATION (edit these paths)
-# ==========================================================
-
 # Path to Flye assemblies (.clean.fasta)
 FLYE_ASSEMBLY_DIR="/home/crk_w22062555/Imperial_fastqs/plassembler_outputs/all_assemblies/cleaned_assemblies/clean_fasta_files"
 
@@ -25,22 +20,18 @@ OUTPUT_BASE="./plassembler_outputs"
 CHROM_SIZE=5000000
 THREADS=16
 
-# ==========================================================
-# END USER CONFIGURATION
-# ==========================================================
-
 mkdir -p "$OUTPUT_BASE"
 
 # Check that database exists
 if [[ ! -d "$DB_DIR" ]]; then
-  echo "❌ Error: Database directory not found at $DB_DIR"
+  echo "Error: Database directory not found at $DB_DIR"
   exit 1
 fi
 
-echo "📁 Flye assemblies directory: $FLYE_ASSEMBLY_DIR"
-echo "📁 FASTQ directory: $FASTQ_DIR"
-echo "📁 Output directory: $OUTPUT_BASE"
-echo "========================================================="
+echo " Flye assemblies directory: $FLYE_ASSEMBLY_DIR"
+echo " FASTQ directory: $FASTQ_DIR"
+echo " Output directory: $OUTPUT_BASE"
+
 
 # Loop over all assemblies ending in .clean.fasta
 for flye in "$FLYE_ASSEMBLY_DIR"/*.clean.fasta; do
@@ -48,13 +39,12 @@ for flye in "$FLYE_ASSEMBLY_DIR"/*.clean.fasta; do
 
   # Extract sample name (before .clean.fasta)
   sample=$(basename "$flye" .clean.fasta)
-  echo "🧬 Processing sample: $sample"
+  echo "Processing sample: $sample"
 
   # Find matching FASTQ file by sample name
   fastq=$(find "$FASTQ_DIR" -maxdepth 1 -type f -name "${sample}*.fastq*" | head -n1)
   if [[ -z "$fastq" ]]; then
-    echo "⚠️  No matching FASTQ found for $sample — skipping."
-    echo "---------------------------------------------------"
+    echo " No matching FASTQ found for $sample — skipping."
     continue
   fi
 
@@ -64,21 +54,19 @@ for flye in "$FLYE_ASSEMBLY_DIR"/*.clean.fasta; do
 
   # Skip if already processed
   if [[ -f "$outdir/plassembler_summary.tsv" ]]; then
-    echo "✅ Already processed ($outdir/plassembler_summary.tsv found). Skipping."
-    echo "---------------------------------------------------"
-    continue
+    echo "Already processed ($outdir/plassembler_summary.tsv found). Skipping."
+   continue
   fi
 
   # Count contigs
   contigs=$(grep -c '^>' "$flye")
   if (( contigs <= 1 )); then
-    echo "⚠️  Only $contigs contig(s) in assembly — skipping."
-    echo "---------------------------------------------------"
+    echo "Only $contigs contig(s) in assembly — skipping."
     continue
   fi
 
   # Run Plassembler
-  echo "🚀 Running Plassembler for $sample..."
+  echo "Running Plassembler for $sample..."
   if plassembler long \
       -d "$DB_DIR" \
       -l "$fastq" \
@@ -87,13 +75,11 @@ for flye in "$FLYE_ASSEMBLY_DIR"/*.clean.fasta; do
       --flye_assembly "$flye" \
       -t "$THREADS" \
       -f; then
-    echo "✅ Plassembler finished for $sample"
+    echo "Plassembler finished for $sample"
   else
-    echo "❌ Plassembler failed for $sample (see logs in $outdir)"
+    echo "Plassembler failed for $sample (see logs in $outdir)"
   fi
-
-  echo "---------------------------------------------------"
 done
 
-echo "🎯 All available Flye assemblies processed."
+echo " All available Flye assemblies processed."
 
