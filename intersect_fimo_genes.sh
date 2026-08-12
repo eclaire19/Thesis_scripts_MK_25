@@ -1,10 +1,5 @@
 #!/bin/bash
-# ==========================================================
-# Script: intersect_fimo_genes.sh
-# Purpose: For each subdirectory, find fimo.sorted.bed and
-#          *genes.sorted.bed files, then run bedtools intersect.
-# Usage: bash intersect_fimo_genes.sh /path/to/main_directory
-# ==========================================================
+
 
 BASEDIR="${1:-.}"
 
@@ -28,11 +23,11 @@ find "$BASEDIR" -type f -name "fimo.sorted.bed" | while read -r FIMO_FILE; do
         # Run bedtools intersect
         bedtools intersect -a "$FIMO_FILE" -b "$GENES_FILE" -wa -wb > "$OUTPUT"
 
-        echo "✅ Created: $OUTPUT"
+        echo "Created: $OUTPUT"
     else
-        echo "⚠️  No genes.sorted.bed file found in: $DIR — skipping."
+        echo " No genes.sorted.bed file found in: $DIR — skipping."
     fi
 done
 
-echo "🎉 Intersection complete for all matching directories!"
+echo "Intersection complete for all matching directories!"
 
