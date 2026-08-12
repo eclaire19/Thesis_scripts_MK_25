@@ -52,5 +52,5 @@ for bed_file in "$BED_DIR"/*.bed; do
   echo " Done with $sample_name"
 done
 
-echo "🎉 All motif searches completed!"
+echo " All motif searches completed!"
 
