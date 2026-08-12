@@ -51,7 +51,7 @@ for subdir in sorted(os.listdir(root_dir)):
     with open(output_file, "w") as f:
         f.writelines(combined_lines)
 
-    print(f"✅ Combined file written: {output_file}")
+    print(f" Combined file written: {output_file}")
 
-print("🎉 All sample folders processed!")
+print("All sample folders processed!")
 
