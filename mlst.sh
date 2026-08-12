@@ -27,4 +27,4 @@ find "$BASE_DIR" -maxdepth 1 -type f -name "*.fasta" | while read -r fasta; do
     echo "$result" >> "$OUTPUT_FILE"
 done
 
-echo "✅ All MLST results written to $OUTPUT_FILE"
+echo "All MLST results written to $OUTPUT_FILE"
