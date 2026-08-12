@@ -1,15 +1,10 @@
 #!/bin/bash
-# ==========================================================
-# Script: convert_gff3_to_bed.sh
-# Purpose: Recursively find all GFF3 files, extract gene/CDS
-#          features, convert them to BED, and sort.
-# Usage: bash convert_gff3_to_bed.sh /path/to/main_directory
-# ==========================================================
+
 
 
 BASEDIR="${1:-.}"
 
-echo "🔍 Searching for GFF3 files in: $BASEDIR"
+echo "Searching for GFF3 files in: $BASEDIR"
 
 find "$BASEDIR" -type f -name "*.gff3" | while read -r GFF; do
     DIR=$(dirname "$GFF")
@@ -17,7 +12,7 @@ find "$BASEDIR" -type f -name "*.gff3" | while read -r GFF; do
     BED_FILE="${DIR}/${BASENAME}.genes.bed"
     SORTED_BED="${DIR}/${BASENAME}.genes.sorted.bed"
 
-    echo "📄 Processing: $GFF"
+    echo "Processing: $GFF"
 
     # Extract gene or CDS features and convert to BED
     awk '$3 == "gene" || $3 == "CDS" {
@@ -30,8 +25,8 @@ find "$BASEDIR" -type f -name "*.gff3" | while read -r GFF; do
     # Sort the BED file
     sort -k1,1 -k2,2n "$BED_FILE" > "$SORTED_BED"
 
-    echo "✅ Created: $SORTED_BED"
+    echo "Created: $SORTED_BED"
 done
 
-echo "🎉 All GFF3 files processed successfully!"
+echo "All GFF3 files processed successfully!"
 
